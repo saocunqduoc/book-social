@@ -1,5 +1,6 @@
-package com.nguyenvanlinh.identityservice.configuration;
+package com.nguyenvanlinh.profile.configuration;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +19,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -28,24 +27,17 @@ public class SecurityConfig {
 
     // config public endpoint
     protected static final String[] PUBLIC_ENDPOINTS = {
-        "/users/register", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refreshToken"
+
     };
 
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
-
-    @Value("${jwt.signerKey}")
-    private String signerKey;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         // xác thực và cấp quyền cho người xem có quyền truy cập vào endpoint đó không
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
                 .permitAll()
-                //                        .requestMatchers(HttpMethod.GET,"/users").hasAuthority("ROLE_ADMIN") // cũ :
-                // SCOPE_ADMIN
-                //                        .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name()) // sử
-                // dụng hasRole thay cho hasAuthority
                 .anyRequest()
                 .authenticated());
         // Xác thực người dùng bằng decoder JWT khi login
@@ -89,18 +81,5 @@ public class SecurityConfig {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return converter;
-    }
-    // decode JWT
-    //    @Bean
-    //    JwtDecoder jwtDecoder() { // verify token
-    //        SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-    //        return NimbusJwtDecoder.withSecretKey(secretKeySpec)
-    //                .macAlgorithm(MacAlgorithm.HS512)
-    //                .build();
-    //    }
-    // decoder for any
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
     }
 }

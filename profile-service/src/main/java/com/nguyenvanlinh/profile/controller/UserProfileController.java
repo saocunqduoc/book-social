@@ -33,8 +33,7 @@ public class UserProfileController {
         return userProfileService.getAllProfiles();
     }
 
-    @PutMapping(
-            "/{profileId}") // @Valid save value don't change -> if don't have -> update firstName = Linh, others value
+    @PutMapping("/{profileId}") // @Valid save value don't change -> if don't have -> update firstName = Linh, others value
     // not update -> null
     UserProfileResponse updateProfile(
             @PathVariable String profileId, @Valid @RequestBody ProfileUpdateRequest request) {

@@ -29,7 +29,7 @@ public class UserController {
     // @PostMapping("/users") -> không cần khai báo chi tiết
     // Post là tạo
     // @Valid để thực hiện validate được khai báo trong request
-    @PostMapping
+    @PostMapping("register")
     ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request))
