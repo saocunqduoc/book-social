@@ -24,7 +24,7 @@ public class InternalUserProfileController {
 
     UserProfileService userProfileService;
 
-    @PostMapping()
+    @PostMapping
     UserProfileResponse createProfile(@RequestBody ProfileCreationRequest request) {
         return userProfileService.createProfile(request);
     }

@@ -2,6 +2,7 @@ package com.nguyenvanlinh.profile.service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.nguyenvanlinh.profile.dto.request.ProfileCreationRequest;
@@ -38,6 +39,7 @@ public class UserProfileService {
         return userProfileMapper.toUserProfileResponse(userProfile);
     }
     // getAll
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserProfileResponse> getAllProfiles() {
         return userProfileRepository.findAll().stream()
                 .map(userProfileMapper::toUserProfileResponse)
