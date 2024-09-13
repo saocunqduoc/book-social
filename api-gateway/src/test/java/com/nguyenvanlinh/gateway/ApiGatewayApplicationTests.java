@@ -1,4 +1,4 @@
-package com.nguyenvanlinh.api_gateway;
+package com.nguyenvanlinh.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

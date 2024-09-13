@@ -1,4 +1,4 @@
-package com.nguyenvanlinh.api_gateway;
+package com.nguyenvanlinh.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
