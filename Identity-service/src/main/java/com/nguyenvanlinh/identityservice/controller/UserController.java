@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import com.nguyenvanlinh.identityservice.dto.request.ApiResponse;
+import com.nguyenvanlinh.identityservice.dto.response.ApiResponse;
 import com.nguyenvanlinh.identityservice.dto.request.UserCreationRequest;
 import com.nguyenvanlinh.identityservice.dto.request.UserUpdateRequest;
 import com.nguyenvanlinh.identityservice.dto.response.UserResponse;
