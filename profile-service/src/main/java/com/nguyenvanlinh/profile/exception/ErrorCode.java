@@ -1,8 +1,9 @@
 package com.nguyenvanlinh.profile.exception;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+
+import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
@@ -19,6 +20,7 @@ public enum ErrorCode {
     WRONG_USERNAME_PASSWORD(1010, "Username or Password is not correct!", HttpStatus.BAD_REQUEST),
     CAN_NOT_CREATE_TOKEN(1011, "Can't create token!", HttpStatus.BAD_REQUEST),
     USER_CREATION_FAILED(1012, "Can't create user!", HttpStatus.BAD_REQUEST),
+    PROFILE_NOT_EXISTED(1013, "Profile not found!", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;

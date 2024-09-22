@@ -7,9 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import com.nguyenvanlinh.identityservice.dto.response.ApiResponse;
 import com.nguyenvanlinh.identityservice.dto.request.UserCreationRequest;
 import com.nguyenvanlinh.identityservice.dto.request.UserUpdateRequest;
+import com.nguyenvanlinh.identityservice.dto.response.ApiResponse;
 import com.nguyenvanlinh.identityservice.dto.response.UserResponse;
 import com.nguyenvanlinh.identityservice.service.UserService;
 
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping({"/users", "/users/"}) // Khai báo toàn class
+@RequestMapping("/users") // Khai báo toàn class
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
@@ -29,7 +29,7 @@ public class UserController {
     // @PostMapping("/users") -> không cần khai báo chi tiết
     // Post là tạo
     // @Valid để thực hiện validate được khai báo trong request
-    @PostMapping("register")
+    @PostMapping("/register")
     ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request))

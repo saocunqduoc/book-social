@@ -81,9 +81,6 @@ public class UserControllerIntegrationTest {
         userResponse = UserResponse.builder()
                 .id("cf0600f538b3")
                 .username("saocunqduoc")
-                .firstName("Linh")
-                .lastName("Nguyen Van")
-                .dob(dob)
                 .build();
     }
 

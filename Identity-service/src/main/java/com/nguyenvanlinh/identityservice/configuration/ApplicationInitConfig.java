@@ -72,13 +72,15 @@ public class ApplicationInitConfig {
                 User user = User.builder()
                         .username(ADMIN_USER_NAME)
                         .password(passwordEncoder.encode(ADMIN_PASSWORD))
+                        .email("admin-email@example.com")
+                        .emailVerified(true)
                         .roles(roles)
                         .build();
 
                 userRepository.save(user);
-                log.warn("admin user has been created with default password: admin, please change it");
-                log.info("Application initialization completed .....");
+                log.warn("user: admin has been created with default password: admin, please change it!");
             }
+            log.info("Application initialization completed .....");
         };
     }
 }

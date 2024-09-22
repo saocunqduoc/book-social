@@ -1,13 +1,9 @@
 package com.nguyenvanlinh.profile.controller;
 
-import java.util.List;
-
-import jakarta.validation.Valid;
-
 import org.springframework.web.bind.annotation.*;
 
 import com.nguyenvanlinh.profile.dto.request.ProfileCreationRequest;
-import com.nguyenvanlinh.profile.dto.request.ProfileUpdateRequest;
+import com.nguyenvanlinh.profile.dto.response.ApiResponse;
 import com.nguyenvanlinh.profile.dto.response.UserProfileResponse;
 import com.nguyenvanlinh.profile.service.UserProfileService;
 
@@ -17,16 +13,24 @@ import lombok.experimental.FieldDefaults;
 
 // Dùng internal để hide api -> bảo mật
 @RestController
-@RequestMapping({"/internal/users/", "/internal/users"})
+@RequestMapping("/internal")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class InternalUserProfileController {
 
     UserProfileService userProfileService;
 
-    @PostMapping
-    UserProfileResponse createProfile(@RequestBody ProfileCreationRequest request) {
-        return userProfileService.createProfile(request);
+    @PostMapping({"/users"})
+    ApiResponse<UserProfileResponse> createProfile(@RequestBody ProfileCreationRequest request) {
+        return ApiResponse.<UserProfileResponse>builder()
+                .result(userProfileService.createProfile(request))
+                .build();
+    }
+
+    @GetMapping("/users/{userId}")
+    ApiResponse<UserProfileResponse> getProfile(@PathVariable String userId) {
+        return ApiResponse.<UserProfileResponse>builder()
+                .result(userProfileService.getByUserId(userId))
+                .build();
     }
 }
-

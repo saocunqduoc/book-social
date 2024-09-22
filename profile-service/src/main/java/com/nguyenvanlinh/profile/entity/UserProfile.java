@@ -12,8 +12,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 // khai báo entity trong neo4j => use annotation: @Node()
-@Getter
-@Setter
 @Data
 @Builder
 @NoArgsConstructor
@@ -27,6 +25,9 @@ public class UserProfile {
 
     @Property("userId")
     String userId;
+
+    String username;
+    String email;
 
     String firstName;
     String lastName;

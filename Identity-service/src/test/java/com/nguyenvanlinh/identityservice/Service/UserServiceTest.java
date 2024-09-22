@@ -95,18 +95,9 @@ class UserServiceTest {
         userResponse = UserResponse.builder()
                 .id("cf0600f538b3")
                 .username("saocunqduoc")
-                .firstName("Linh")
-                .lastName("Van Nguyen")
-                .dob(dob)
                 .build();
 
-        user = User.builder()
-                .id("cf0600f538b3")
-                .username("saocunqduoc")
-                .firstName("Linh")
-                .lastName("Van Nguyen")
-                .dob(dob)
-                .build();
+        user = User.builder().id("cf0600f538b3").username("saocunqduoc").build();
     }
 
     @Test
@@ -208,7 +199,6 @@ class UserServiceTest {
         // WHERE
         // THEN
         Assertions.assertThat(user.getUsername()).isEqualTo("saocunqduoc");
-        Assertions.assertThat(user.getLastName()).isEqualTo("Nguyen Van");
     }
     // updateUser fail
     @Test

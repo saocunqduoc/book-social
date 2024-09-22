@@ -1,6 +1,5 @@
 package com.nguyenvanlinh.identityservice.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,8 +27,7 @@ public class SecurityConfig {
         "/users/register", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refreshToken"
     };
 
-    @Autowired
-    private CustomJwtDecoder customJwtDecoder;
+    private final CustomJwtDecoder customJwtDecoder;
 
     @Value("${jwt.signerKey}")
     private String signerKey;
@@ -63,23 +58,23 @@ public class SecurityConfig {
         return httpSecurity.build();
     }
     // config cors de co the run api on website
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        // allow to access from what web
-        //        corsConfiguration.addAllowedOrigin("http://localhost:3000");
-        corsConfiguration.addAllowedOrigin("*");
-        // allow method can call in origin
-        corsConfiguration.addAllowedMethod("*");
-        // allow header
-        corsConfiguration.addAllowedHeader("*");
+    // @Bean
+    // public CorsFilter corsFilter() {
+    //     CorsConfiguration corsConfiguration = new CorsConfiguration();
+    //     // allow to access from what web
+    //     //        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+    //     corsConfiguration.addAllowedOrigin("*");
+    //     // allow method can call in origin
+    //     corsConfiguration.addAllowedMethod("*");
+    //     // allow header
+    //     corsConfiguration.addAllowedHeader("*");
 
-        // khai bao cors theo tung endpoint
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+    //     // khai bao cors theo tung endpoint
+    //     UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+    //     urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
 
-        return new CorsFilter(urlBasedCorsConfigurationSource);
-    }
+    //     return new CorsFilter(urlBasedCorsConfigurationSource);
+    // }
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {

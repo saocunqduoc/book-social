@@ -6,8 +6,8 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.nguyenvanlinh.profile.dto.request.ProfileCreationRequest;
 import com.nguyenvanlinh.profile.dto.request.ProfileUpdateRequest;
+import com.nguyenvanlinh.profile.dto.response.ApiResponse;
 import com.nguyenvanlinh.profile.dto.response.UserProfileResponse;
 import com.nguyenvanlinh.profile.service.UserProfileService;
 
@@ -24,16 +24,28 @@ public class UserProfileController {
     UserProfileService userProfileService;
 
     @GetMapping("/{profileId}")
-    UserProfileResponse getProfile(@PathVariable String profileId) {
-        return userProfileService.getProfile(profileId);
+    ApiResponse<UserProfileResponse> getProfile(@PathVariable String profileId) {
+        return ApiResponse.<UserProfileResponse>builder()
+                .result(userProfileService.getProfile(profileId))
+                .build();
     }
 
     @GetMapping
-    List<UserProfileResponse> getAllProfiles() {
-        return userProfileService.getAllProfiles();
+    ApiResponse<List<UserProfileResponse>> getAllProfiles() {
+        return ApiResponse.<List<UserProfileResponse>>builder()
+                .result(userProfileService.getAllProfiles())
+                .build();
     }
 
-    @PutMapping("/{profileId}") // @Valid save value don't change -> if don't have -> update firstName = Linh, others value
+    @GetMapping("/my-profile")
+    ApiResponse<UserProfileResponse> getMyProfile() {
+        return ApiResponse.<UserProfileResponse>builder()
+                .result(userProfileService.getMyProfile())
+                .build();
+    }
+
+    @PutMapping(
+            "/{profileId}") // @Valid save value don't change -> if don't have -> update firstName = Linh, others value
     // not update -> null
     UserProfileResponse updateProfile(
             @PathVariable String profileId, @Valid @RequestBody ProfileUpdateRequest request) {
