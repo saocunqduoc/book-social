@@ -72,6 +72,8 @@ public class AuthenticationService {
         }
         return IntrospectResponse.builder().valid(isValid).build();
     }
+    // Xác thực otp
+
     // Xác thực // POST : Token
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         log.info("{}", SIGNER_KEY);
@@ -166,7 +168,7 @@ public class AuthenticationService {
 
         // Data trong body(nội dung gửi đi trong token) -> gọi là claim
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername()) // đại diện cho user đang nhập
+                .subject(user.getId()) // đại diện cho user đang nhập
                 .issuer("nguyenvanlinh.com") // được issue từ ai? Thường là domain của Service
                 .issueTime(new Date()) // thời gian tạo
                 .expirationTime(new Date(Instant.now()

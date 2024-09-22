@@ -1,15 +1,17 @@
 package com.nguyenvanlinh.profile.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nguyenvanlinh.profile.dto.response.ApiResponse;
-import com.nguyenvanlinh.profile.exception.ErrorCode;
+import java.io.IOException;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nguyenvanlinh.profile.dto.response.ApiResponse;
+import com.nguyenvanlinh.profile.exception.ErrorCode;
 
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     // HTTP status
