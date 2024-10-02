@@ -58,7 +58,7 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("/myInfo")
+    @GetMapping("/my-info")
     ApiResponse<UserResponse> getMyInfo() {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getMyInfo())
@@ -72,6 +72,13 @@ public class UserController {
             @PathVariable("userId") String userId, @Valid @RequestBody UserUpdateRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.updateUser(userId, request))
+                .build();
+    }
+
+    @PostMapping("/sendEmail")
+    ApiResponse<Void> sendEmail() {
+        return ApiResponse.<Void>builder()
+                .result(userService.sendEmailToVerification())
                 .build();
     }
 

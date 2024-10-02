@@ -2,10 +2,7 @@ package com.nguyenvanlinh.identityservice.controller;
 
 import java.text.ParseException;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.nguyenvanlinh.identityservice.dto.request.*;
 import com.nguyenvanlinh.identityservice.dto.response.ApiResponse;
@@ -24,6 +21,20 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
     AuthenticationService authenticationService;
+
+    // outbound : System bên ngoài
+    @PostMapping("/outbound/authentication")
+    ApiResponse<AuthenticationResponse> authenticateOutbound(@RequestParam("code") String code) {
+        var result = authenticationService.outboundAuthentication(code);
+        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+    }
+    // verify email
+    @PostMapping("/verify")
+    public ApiResponse<IntrospectResponse> verifyEmail(@RequestParam String userId, @RequestParam String otp) {
+        VerifiedEmailRequest request = new VerifiedEmailRequest(userId, otp); // Create the request object
+        var result = authenticationService.verifyOtp(request);
+        return ApiResponse.<IntrospectResponse>builder().result(result).build();
+    }
 
     @PostMapping("/token")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {

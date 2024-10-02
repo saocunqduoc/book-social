@@ -1,4 +1,4 @@
-package com.nguyenvanlinh.post.service;
+package com.nguyenvanlinh.post.service.Fomat;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

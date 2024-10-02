@@ -48,7 +48,6 @@ public class UserProfileService {
         var profile = userProfileRepository
                 .findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
         return userProfileMapper.toUserProfileResponse(profile);
     }
     // get By Id
@@ -58,6 +57,7 @@ public class UserProfileService {
         return userProfileMapper.toUserProfileResponse(userProfile);
     }
     // get User Profile
+    //    @PreAuthorize("hasRole('ADMIN')")
     public UserProfileResponse getByUserId(String userId) {
         UserProfile userProfile = userProfileRepository
                 .findByUserId(userId)
@@ -76,11 +76,12 @@ public class UserProfileService {
         userProfileRepository.deleteById(profileId);
     }
     // Update
-    public UserProfileResponse updateProfile(String profileId, ProfileUpdateRequest request) {
+
+    public UserProfileResponse updateProfile(String userId, ProfileUpdateRequest request) {
         UserProfile userProfile = userProfileRepository
-                .findById(profileId)
+                .findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_EXISTED));
         userProfileMapper.updateProfile(userProfile, request);
-        return userProfileMapper.toUserProfileResponse(userProfile);
+        return userProfileMapper.toUserProfileResponse(userProfileRepository.save(userProfile));
     }
 }

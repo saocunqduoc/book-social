@@ -1,0 +1,71 @@
+/* web-app/src/components/Header.css */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #757575; /* Màu nền giống Facebook */
+  padding: 10px 20px;
+  color: white;
+}
+
+.header-left h1 {
+  margin: 0;
+}
+
+.header-center {
+  flex-grow: 1; /* Cho phép ô tìm kiếm chiếm không gian còn lại */
+  margin-left: 20px; /* Di chuyển ô tìm kiếm gần logo */
+}
+
+.header-center input {
+  padding: 10px;
+  border-radius: 20px; /* Bo tròn góc */
+  border: none;
+  width: 100%; /* Chiếm toàn bộ chiều rộng */
+  max-width: 400px; /* Giới hạn chiều rộng tối đa */
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  position: relative;
+  margin-left: 10px; /* Lệch sang bên trái */
+  margin-right: 10px;
+  cursor: pointer;
+  border: 2px solid white; /* Thêm border trắng */
+  border-radius: 50%; /* Bo tròn border */
+  padding: 5px; /* Khoảng cách giữa icon và border */
+  transition: background-color 0.3s;
+}
+
+/* web-app/src/components/header/Header.css */
+.icon .dropdown {
+  position: absolute;
+  top: 50px; /* Đặt vị trí dropdown */
+  right: 0;
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Tăng độ mờ của bóng */
+  z-index: 1000;
+  min-width: 150px; /* Đặt chiều rộng tối thiểu cho dropdown */
+  transition: all 0.3s ease; /* Hiệu ứng chuyển động mượt mà */
+}
+
+.icon .dropdown div {
+  padding: 10px 15px; /* Khoảng cách cho từng mục trong dropdown */
+  cursor: pointer; /* Con trỏ khi hover */
+  border-radius: 3px; /* Bo tròn cho từng mục */
+}
+
+.icon .dropdown div:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Hiệu ứng hover cho mục dropdown */
+}
+
+.icon .dropdown div + div {
+  margin-top: 5px; /* Khoảng cách giữa các mục */
+}

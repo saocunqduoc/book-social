@@ -1,0 +1,14 @@
+# discovery-service/src/main/resources/application.yaml
+spring:
+  application:
+    name: eureka-server
+server:
+  port: 8761
+  servlet:
+    context-path: /eureka
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    hostname: localhost

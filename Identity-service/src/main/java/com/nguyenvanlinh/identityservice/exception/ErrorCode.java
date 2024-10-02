@@ -22,6 +22,7 @@ public enum ErrorCode {
     USER_CREATION_FAILED(1012, "Can't create user!", HttpStatus.BAD_REQUEST),
     INVALID_EMAIL(1013, "Email Invalid!", HttpStatus.BAD_REQUEST),
     EMAIL_IS_REQUIRED(1015, "Email is required!", HttpStatus.BAD_REQUEST),
+    INVALID_USER_OR_OTP(1016, "Invalid user or otp!", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;

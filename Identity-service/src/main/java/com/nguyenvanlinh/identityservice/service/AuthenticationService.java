@@ -3,9 +3,7 @@ package com.nguyenvanlinh.identityservice.service;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,18 +11,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.nguyenvanlinh.identityservice.dto.request.AuthenticationRequest;
-import com.nguyenvanlinh.identityservice.dto.request.IntrospectRequest;
-import com.nguyenvanlinh.identityservice.dto.request.LogoutRequest;
-import com.nguyenvanlinh.identityservice.dto.request.RefreshTokenRequest;
+import com.nguyenvanlinh.identityservice.constant.RolesConstant;
+import com.nguyenvanlinh.identityservice.dto.request.*;
 import com.nguyenvanlinh.identityservice.dto.response.AuthenticationResponse;
 import com.nguyenvanlinh.identityservice.dto.response.IntrospectResponse;
+import com.nguyenvanlinh.identityservice.entity.EmailVerifyToken;
 import com.nguyenvanlinh.identityservice.entity.InvalidateToken;
+import com.nguyenvanlinh.identityservice.entity.Role;
 import com.nguyenvanlinh.identityservice.entity.User;
 import com.nguyenvanlinh.identityservice.exception.AppException;
 import com.nguyenvanlinh.identityservice.exception.ErrorCode;
+import com.nguyenvanlinh.identityservice.repository.EmailVerifyTokenRepository;
 import com.nguyenvanlinh.identityservice.repository.InvalidateTokenRepository;
 import com.nguyenvanlinh.identityservice.repository.UserRepository;
+import com.nguyenvanlinh.identityservice.repository.httpclient.OutBoundIdentityClient;
+import com.nguyenvanlinh.identityservice.repository.httpclient.OutBoundUserClient;
+import com.nguyenvanlinh.identityservice.repository.httpclient.ProfileClient;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -43,8 +45,12 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
     UserRepository userRepository;
-
     InvalidateTokenRepository invalidateTokenRepository;
+    EmailVerifyTokenRepository emailVerifyTokenRepository;
+
+    ProfileClient profileClient;
+    OutBoundIdentityClient outBoundIdentityClient;
+    OutBoundUserClient outBoundUserClient;
 
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -58,6 +64,20 @@ public class AuthenticationService {
     @Value("${jwt.refreshable-duration}")
     protected Long REFRESHABLE_DURATION;
 
+    @Value("${outbound.client-id}")
+    @NonFinal
+    String CLIENT_ID;
+
+    @Value("${outbound.client-secret}")
+    @NonFinal
+    String CLIENT_SECRET;
+
+    @Value("${outbound.redirect-uri}")
+    @NonFinal
+    String REDIRECT_URI;
+
+    @NonFinal
+    protected final String GRANT_TYPE = "authorization_code";
     //
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         // get token từ request của authenticate
@@ -72,7 +92,74 @@ public class AuthenticationService {
         }
         return IntrospectResponse.builder().valid(isValid).build();
     }
-    // Xác thực otp
+
+    // Outbound _ Exchange token from google code
+    public AuthenticationResponse outboundAuthentication(String code) {
+
+        var response = outBoundIdentityClient.exchangeToken(ExchangeTokenRequest.builder()
+                .code(code)
+                .clientId(CLIENT_ID)
+                .clientSecret(CLIENT_SECRET)
+                .redirectUri(REDIRECT_URI)
+                .grantType(GRANT_TYPE)
+                .build());
+
+        log.info("TOKEN RESPONSE: {}", response);
+        // get Access Token
+        var userInfo = outBoundUserClient.getUserInfo("json", response.getAccessToken());
+
+        log.info("USER INFO: {}", userInfo);
+
+        // Onboard user when login with Google
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.builder().name(RolesConstant.USER_ROLE).build());
+        User user = new User();
+        // nếu chưa có => tạo mới một user + profile với những gì google cung cấp từ oauth
+        if (userRepository.findByUsername(userInfo.getEmail()).isEmpty()) {
+            // onboard user
+            user = userRepository.save(User.builder()
+                    .username(userInfo.getEmail())
+                    .email(userInfo.getEmail())
+                    .roles(roles)
+                    .emailVerified(true)
+                    .build());
+            // onboard profiles
+            profileClient.createProfile(ProfileCreationRequest.builder()
+                    .email(user.getEmail())
+                    .username(user.getUsername())
+                    .userId(user.getId())
+                    .firstName(userInfo.getGivenName())
+                    .lastName(userInfo.getFamilyName())
+                    .build());
+        }
+        var getToken = userRepository
+                .findByUsername(userInfo.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        log.info("User RESPONSE: {}", getToken.getId() + getToken.getUsername());
+        var token = generateToken(getToken);
+        log.info("Token RESPONSE: {}", token);
+        return AuthenticationResponse.builder().token(token).build();
+    }
+    // Xác thực email
+    public IntrospectResponse verifyOtp(VerifiedEmailRequest request) {
+        // Tìm mã OTP theo userId
+        EmailVerifyToken emailVerifyToken = emailVerifyTokenRepository
+                .findByUserIdAndToken(request.getUserId(), request.getOtp())
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_USER_OR_OTP));
+
+        // Cập nhật trạng thái xác thực của người dùng
+        User user = userRepository
+                .findById(emailVerifyToken.getUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setEmailVerified(true);
+        userRepository.save(user);
+
+        // Xóa mã OTP sau khi xác thực thành công
+        emailVerifyTokenRepository.delete(emailVerifyToken);
+
+        var isValid = user.isEmailVerified();
+        return IntrospectResponse.builder().valid(isValid).build();
+    }
 
     // Xác thực // POST : Token
     public AuthenticationResponse authenticate(AuthenticationRequest request) {

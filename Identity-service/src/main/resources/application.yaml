@@ -3,6 +3,8 @@ server:
   servlet:
     context-path: /identity
 spring:
+  application:
+    name: identity-service
   datasource:
     url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/identity_service} # declare environment variables ${edit:default}
     username : ${DBMS_USERNAME:root}
@@ -24,7 +26,10 @@ jwt:
     signerKey: "SE1f0TDucS8RvuRNvX+EHYc5VeBEJH1BVJQs8zIhgtqFU343Wo3Qdkw3QavKD0eP"
     expiration-duration: 3600 # in seconds
     refreshable-duration: 360000 # in seconds
+outbound:
+  client-id: ${CLIENT_ID}
+  client-secret: ${CLIENT_SECRET}
+  redirect-uri: ${REDIRECT_URI:http://localhost:3000/authenticate}
 app:
   services:
     profile: http://localhost:8081/profile
-

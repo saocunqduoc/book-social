@@ -21,6 +21,8 @@ public enum ErrorCode {
     CAN_NOT_CREATE_TOKEN(1011, "Can't create token!", HttpStatus.BAD_REQUEST),
     USER_CREATION_FAILED(1012, "Can't create user!", HttpStatus.BAD_REQUEST),
     PROFILE_NOT_EXISTED(1013, "Profile not found!", HttpStatus.NOT_FOUND),
+    ALREADY_LIKE_THIS_POST(1014, "You already like this post!", HttpStatus.BAD_REQUEST),
+    POST_NOT_EXISTED(1015, "Post not existed!", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;

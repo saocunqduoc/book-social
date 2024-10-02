@@ -19,6 +19,5 @@ spring:
         spring.json.trusted.packages: "*"
 notification:
   email:
-    brevo-url: http://api.brevo.com
-  api-key:
-    brevo-apikey: {BREVO_API_KEY}
+    brevo-url: "https://api.brevo.com"
+    brevo-apikey: ${BREVO_API_KEY}
