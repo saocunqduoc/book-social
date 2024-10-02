@@ -11,18 +11,20 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EmailService {
 
-
     EmailClient emailClient;
 
-    @Value("${notification.api-key.brevo-apikey}")
+    @Value("${notification.email.brevo-apikey}")
     @NonFinal
     String apiKey;
 
@@ -40,6 +42,7 @@ public class EmailService {
         try {
             return emailClient.sendEmail(apiKey, emailRequest);
         } catch ( Exception e) {
+            log.error("Error sending email", e);
             throw new AppException(ErrorCode.CANNOT_SEND_EMAIL);
         }
 

@@ -1,11 +1,13 @@
 package com.nguyenvanlinh.post.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
-import com.nguyenvanlinh.post.dto.request.PostRequest;
 import com.nguyenvanlinh.post.dto.response.ApiResponse;
 import com.nguyenvanlinh.post.dto.response.PageResponse;
 import com.nguyenvanlinh.post.dto.response.PostResponse;
+import com.nguyenvanlinh.post.entity.Post;
 import com.nguyenvanlinh.post.service.PostService;
 
 import lombok.AccessLevel;
@@ -20,18 +22,44 @@ public class PostController {
     PostService postService;
 
     @PostMapping("/create")
-    ApiResponse<PostResponse> createPost(@RequestBody PostRequest request) {
-        return ApiResponse.<PostResponse>builder()
+    ApiResponse<Post> createPost(@RequestBody Post request) {
+        return ApiResponse.<Post>builder()
                 .result(postService.createPost(request))
                 .build();
     }
 
-    @GetMapping("/my-posts")
-    ApiResponse<PageResponse<PostResponse>> getMyPosts(
-            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
-        return ApiResponse.<PageResponse<PostResponse>>builder()
-                .result(postService.getMyPosts(page, size))
+    @PutMapping("/update/{postId}")
+    ApiResponse<Post> updatePost(@PathVariable("postId") String postId, @RequestBody Post request) {
+        return ApiResponse.<Post>builder()
+                .result(postService.updatePost(postId, request))
                 .build();
+    }
+
+    @DeleteMapping("/delete/{postId}")
+    ApiResponse<Void> deletePost(@PathVariable("postId") String postId) {
+        return ApiResponse.<Void>builder()
+                .result(postService.deletePost(postId))
+                .build();
+    }
+
+    @GetMapping("/posts")
+    ApiResponse<List<PostResponse>> getAllPosts() {
+        return ApiResponse.<List<PostResponse>>builder()
+                .result(postService.getAllPosts())
+                .build();
+    }
+
+    @GetMapping("/{postId}")
+    Post getPost(@PathVariable("postId") String postId) {
+        return postService.getPost(postId);
+    }
+
+    @GetMapping("/{userId}/posts")
+    public ApiResponse<PageResponse<PostResponse>> getPostsByUserId(
+            @PathVariable String userId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        PageResponse<PostResponse> posts = postService.getPostsByUserId(userId, page, size);
+        return ApiResponse.<PageResponse<PostResponse>>builder().result(posts).build();
     }
 }

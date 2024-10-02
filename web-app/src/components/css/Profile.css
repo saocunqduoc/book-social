@@ -1,0 +1,274 @@
+/* web-app/src/components/css/Profile.css */
+body {
+    margin: 0; /* Xóa margin mặc định */
+    background-color: #1c1c1c; /* Màu nền xám đen cho toàn bộ trang */
+}
+
+.profile-container {
+    max-width: 800px;
+    margin: 0 auto; /* Căn giữa */
+    padding: 20px;
+    background-color: #2c2c2c; /* Màu nền tối cho container */
+    color: white; /* Màu chữ trắng */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    text-align: center;
+}
+
+.new-post {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.post-input {
+    display: flex; /* Sử dụng flexbox để căn chỉnh ô nhập và nút đăng */
+}
+
+textarea {
+    flex: 1; /* Chiếm không gian còn lại */
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #555; /* Màu viền tối */
+    background-color: #444; /* Màu nền ô nhập */
+    color: white; /* Màu chữ trắng */
+    resize: none; /* Không cho phép thay đổi kích thước */
+}
+
+button {
+    margin-left: 10px; /* Khoảng cách giữa ô nhập và nút đăng */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: transparent; /* Nền trong suốt */
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #828283; /* Màu khi hover */
+}
+
+.posts {
+    margin-top: 20px;
+}
+
+.post-card {
+    background-color: #3a3a3a; /* Màu nền bài viết */
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+}
+.post-header {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.avatar {
+    width: 40px; /* Kích thước avatar */
+    height: 40px; /* Kích thước avatar */
+    border-radius: 50%; /* Làm tròn avatar */
+    margin-right: 20px; /* Khoảng cách giữa avatar và tên */
+}
+
+.post-info {
+    display: flex;
+    flex-direction: column; /* Đặt tên và ngày theo chiều dọc */
+    margin-bottom: 0px; /* Thêm khoảng cách dưới cùng nếu cần */
+    margin-top: 10px;
+}
+
+.post-info h3 {
+    margin: 0; /* Xóa margin mặc định của h2 */
+}
+
+.post-date {
+    font-size: 0.9em;
+    color: #bbb; /* Màu chữ nhạt hơn cho ngày */
+    margin-top: 2px; /* Thêm khoảng cách nhỏ giữa username và created */
+}
+
+.post-date {
+    font-size: 0.9em;
+    color: #bbb; /* Màu chữ nhạt hơn cho ngày */
+}
+
+.post-content {
+    margin: 0px 10px 15px 10px; /* Khoảng cách giữa nội dung và các nút */
+}
+
+.post-actions {
+    display: flex; /* Sử dụng flexbox để căn chỉnh các nút */
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+.post-actions button {
+    padding: 8px 150px  ; /* Điều chỉnh padding cho nút */
+    border: none; /* Xóa viền */
+    border-radius: 5px; /* Bo tròn góc */
+    background-color: transparent; /* Nền trong suốt */
+    color: white; /* Màu chữ trắng */
+    cursor: pointer; /* Con trỏ khi hover */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+}
+.post-actions button:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Màu nền khi hover */
+}
+.divider {
+    width: 100%; /* Độ rộng của đường kẻ */
+    height: 1px; /* Chiều cao của đường kẻ */
+    background-color: #808080; /* Màu của đường kẻ */
+    margin: 5px 0; /* Khoảng cách trên và dưới */
+}
+.vertical {
+    width: 1px; /* Độ rộng của đường kẻ dọc */
+    height: 20px; /* Chiều cao của đường kẻ dọc */
+    margin: 0 10px; /* Khoảng cách giữa các nút và đường kẻ dọc */
+    background-color: #808080; /* Màu của đường kẻ dọc */
+}
+
+.comment {
+    display: flex;
+    flex-direction: column; /* Đảm bảo các phần tử con xếp chồng lên nhau */
+    margin-bottom: 0px; /* Khoảng cách giữa các bình luận */
+}
+
+.comment-header {
+    display: flex; /* Sử dụng flex để sắp xếp avatar và thông tin */
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.comment img {
+    width: 40px; /* Kích thước avatar */
+    height: 40px; /* Kích thước avatar */
+    border-radius: 50%; /* Làm tròn avatar */
+    margin-left: 10px; /* Khoảng cách giữa avatar và thông tin */
+}
+
+.comment-content {
+    margin-top: 5px; /* Khoảng cách giữa header và nội dung */
+    margin-left: 10px;
+}
+
+.comment-input {
+    display: flex; /* Sử dụng flexbox để căn chỉnh ô nhập và nút gửi */
+    margin-top: 10px;
+}
+
+.comment-input textarea {
+    flex: 1; /* Chiếm không gian còn lại */
+    margin-right: 10px; /* Khoảng cách giữa ô nhập và nút gửi */
+}
+
+.comment-input button {
+    padding: 8px; /* Kích thước nút gửi */
+    border: none;
+    background-color: transparent; /* Nền trong suốt */
+    color: white; /* Màu chữ trắng */
+    cursor: pointer;
+}
+.comment-input button:hover {
+    background-color: #828283; /* Màu khi hover */
+}
+.comment-input img {
+    margin-top: 5px;
+}
+.like-count {
+    margin-left: 10px;
+}
+
+.comment-count {
+    margin-left: 580px;
+}
+.comment-actions {
+    position: relative; /* Để menu drop-down có thể được định vị */
+}
+.dropdown-button {
+    font-size: 20px; /* Kích thước chữ lớn hơn */
+    background: none; /* Không có nền */
+    border: none; /* Không có viền */
+    color: inherit; /* Kế thừa màu chữ */
+    cursor: pointer; /* Con trỏ khi hover */
+}
+.dropdown-menu {
+    position: absolute;
+    background-color: #333; /* Màu nền xám tối */
+    color: white; /* Màu chữ trắng */
+    border: 1px solid #ccc;
+    width: 150px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000; /* Đảm bảo menu nằm trên các phần tử khác */ /* Khoảng cách bên trong menu */
+    border-radius: 4px; /* Bo góc cho menu */
+}
+
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 0px;
+    text-align: left;
+    border: none;
+    background: none;
+    color: white; /* Màu chữ trắng */
+    cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+    background-color: #555; /* Hiệu ứng hover với màu xám sáng hơn */
+}
+.edit-comment button {
+    align-items: center;
+    justify-content: center;
+}
+.comment-update-container {
+    display: flex;
+    width: 100%; /* Chiều rộng đầy đủ */
+}
+
+.comment-update-container textarea {
+    width: 100%; /* Chiều rộng đầy đủ cho ô nhập */
+    margin-bottom: 10px; /* Khoảng cách dưới ô nhập */
+}
+
+.comment-update-container button {
+    margin-top: 5px; /* Khoảng cách trên nút */
+}
+
+.emoji-picker-container {
+    position: absolute; /* Định vị tuyệt đối */
+    z-index: 1000; /* Đặt z-index cao để nằm trên cùng */
+    background-color: white; /* Nền trắng */
+    border: 1px solid #ccc; /* Đường viền */
+    border-radius: 5px; /* Bo góc */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+    margin-top: 70px; /* Khoảng cách từ ô nhập */
+    margin-left: 500px;
+}
+/* styles.css */
+.dropdown-menu {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    padding: 10px;
+    left: 60%; /* Đặt dropdown bên phải */
+    transform: translateX(-100%); /* Dịch chuyển sang trái để căn chỉnh */
+}
+
+.dropdown-menu button {
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+.dropdown-menu button:hover {
+    background-color: #f0f0f0;
+}

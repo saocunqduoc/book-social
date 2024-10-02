@@ -24,7 +24,13 @@ public class SecurityConfig {
 
     // config public endpoint
     protected static final String[] PUBLIC_ENDPOINTS = {
-        "/users/register", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refreshToken"
+        "/users/register",
+        "/auth/token",
+        "/auth/introspect",
+        "/auth/logout",
+        "/auth/refreshToken",
+        "/auth/outbound/authentication",
+        "/auth/verify"
     };
 
     private final CustomJwtDecoder customJwtDecoder;
@@ -37,6 +43,7 @@ public class SecurityConfig {
         // xác thực và cấp quyền cho người xem có quyền truy cập vào endpoint đó không
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
                 .permitAll()
+                .requestMatchers("/ws/**").permitAll()
                 //                        .requestMatchers(HttpMethod.GET,"/users").hasAuthority("ROLE_ADMIN") // cũ :
                 // SCOPE_ADMIN
                 //                        .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name()) // sử

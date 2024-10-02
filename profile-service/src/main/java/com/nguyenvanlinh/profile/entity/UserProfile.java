@@ -1,12 +1,12 @@
 package com.nguyenvanlinh.profile.entity;
 
 import java.time.LocalDate;
+import java.util.Set;
 
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Property;
+import org.springframework.data.neo4j.core.schema.*;
 import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,4 +33,8 @@ public class UserProfile {
     String lastName;
     LocalDate dob;
     String city;
+    // Mối quan hệ bạn bè
+    @JsonIgnore
+    @Relationship(type = "FRIENDS_WITH")
+    Set<Friend> friends;
 }

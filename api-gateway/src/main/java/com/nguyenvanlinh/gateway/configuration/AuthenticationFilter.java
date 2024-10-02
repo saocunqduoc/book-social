@@ -41,6 +41,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/identity/auth/.*",
             "/identity/users/register",
             "/notification/email/send",
+            "/identity/auth/verify",
+            "/ws/.*"
 
     }; // .* để public những endpoint có thể public
 
@@ -57,10 +59,11 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         // sử dụng JWT ở identity-service để authentication
         // B1 : Get token from authorization header
         List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
-        if(CollectionUtils.isEmpty(authHeader)) // dùng CollectionUtils để kiểm tra một list, set, queue có null hoặc empty không
+        if(CollectionUtils.isEmpty(authHeader)) { // dùng CollectionUtils để kiểm tra một list, set, queue có null hoặc empty không
+            log.warn("Authorization header is missing");
             return unauthenticated(exchange.getResponse());
-
-        String token = authHeader.getFirst().replace("Bearer","");
+        }
+        String token = authHeader.getFirst().replace("Bearer","").trim();
         log.info("Token: {}", token);
         return identityService.introspect(token).flatMap(introspectResponseApiResponse -> {
             if(introspectResponseApiResponse.getResult().isValid())
@@ -68,7 +71,10 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                 return chain.filter(exchange);
             else
                 return unauthenticated(exchange.getResponse());
-        }).onErrorResume(throwable -> unauthenticated(exchange.getResponse()));
+        }).onErrorResume(throwable -> {
+            log.error("Error during introspection: {}", throwable.getMessage());
+            return unauthenticated(exchange.getResponse());
+        });
     }
 
     // Order dùng để xếp thứ tự Global Filter: số càng nhỏ => thứ tự càng lớn => chạy trước

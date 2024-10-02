@@ -1,9 +1,5 @@
-export const CONFIG = {
-  API_GATEWAY: "http://localhost:8668/api/v1",
-};
-
-export const API = {
-  LOGIN: "/identity/auth/token",
-  MY_INFO: "/profile/users/my-profile",
-  MY_POST: "/post/my-posts",
+export const OAuthConfig = {
+  clientId: "300647848136-n32bmrbl7065a31g7o5958mma46pirjt.apps.googleusercontent.com",
+  redirectUri: "http://localhost:3000/authenticate",
+  authUri: "https://accounts.google.com/o/oauth2/auth",
 };

@@ -1,13 +1,14 @@
-import { CssBaseline } from "@mui/material";
-import AppRoutes from "./routes/AppRoutes";
+import "./App.css";
+import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import AppRoutes from './routes/AppRoutes';
 
-function App() {
+const App = () => {
   return (
-    <>
-      <CssBaseline />
+    <Router>
       <AppRoutes />
-    </>
+    </Router>
   );
-}
+};
 
 export default App;

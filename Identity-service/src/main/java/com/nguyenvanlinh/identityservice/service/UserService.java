@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -80,36 +81,8 @@ public class UserService {
             profileRequest.setUserId(user.getId());
             profileClient.createProfile(profileRequest);
 
-            String emailBody = "<!DOCTYPE html>" + "<html lang=\"vi\">"
-                    + "<head>"
-                    + "<style>"
-                    + "body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;}"
-                    + ".container { background-color: #ffffff; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); max-width: 600px; margin: auto; padding: 20px;}"
-                    + "h1 { color: #333; text-align: center; }"
-                    + "p {color: #555; line-height: 1.5;}"
-                    + ".otp {font-size: 24px;font-weight: bold;color: #000000;text-align: center;margin: 20px 0; }"
-                    + ".button { display: block; width: 100%; background-color: #007bff; color: #ffffff; /* Màu chữ */ padding: 10px; text-align: center; text-decoration: none;border-radius: 5px;font-weight: bold; margin-top: 20px; }\n"
-                    + "a { color: #007bff; text-decoration: none; /* Bỏ gạch chân */ }"
-                    + ".footer { text-align: center; margin-top: 20px; color: #999; font-size: 12px;}"
-                    + "</style>"
-                    + "</head>"
-                    + "<body>"
-                    + "<div class=\"container\">"
-                    + "<h1>Chào mừng bạn đến với Book Social, "
-                    + request.getUsername() + "!</h1>" + "<p>Cảm ơn bạn đã đăng ký tài khoản</p>"
-                    + "<p>Để xác thực tài khoản của bạn, vui lòng sử dụng mã OTP dưới đây:</p>"
-                    + "<div class=\"otp\">"
-                    + otp + "</div>" + // Thay đổi mã OTP ở đây
-                    "<p>Hoặc nhấp vào nút bên dưới để xác thực tài khoản của bạn:</p>"
-                    + "<a href='http://localhost:8080/verify-email?otp="
-                    + otp + "' class=\"button\">Xác thực tài khoản</a>" + // Thay đổi đường dẫn ở đây
-                    "<div class=\"footer\">"
-                    + "<p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>"
-                    + "<p>Chúc bạn một ngày tốt lành!</p>"
-                    + "</div>"
-                    + "</div>"
-                    + "</body>"
-                    + "</html>";
+            String emailBody = createEmailBody(user.getUsername(), user.getId(), otp);
+
             NotificationEvent notificationEvent = NotificationEvent.builder()
                     .channel("EMAIL")
                     .recipient(request.getEmail())
@@ -119,19 +92,45 @@ public class UserService {
 
             // Publish message to kafka
             kafkaTemplate.send("notification-delivery", notificationEvent);
+
         } catch (DataIntegrityViolationException exception) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
         return userMapper.toUserResponse(user);
     }
+
+    public Void sendEmailToVerification() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var user = userRepository
+                .findById(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        String otp = generateOTP(); // Tạo mã xác thực 6 chữ số
+        EmailVerifyToken emailVerifyToken =
+                EmailVerifyToken.builder().userId(user.getId()).token(otp).build(); // Lưu mã OTP
+        emailVerifyTokenRepository.save(emailVerifyToken);
+
+        String emailBody = createEmailBody(user.getUsername(), user.getId(), otp);
+
+        NotificationEvent notificationEvent = NotificationEvent.builder()
+                .channel("EMAIL")
+                .recipient(user.getEmail())
+                .subject("The latest step to onboard your account!")
+                .body(emailBody)
+                .build();
+
+        // Publish message to kafka
+        kafkaTemplate.send("notification-delivery", notificationEvent);
+        return null;
+    }
+
     // getInfo bằng token authenticate hiện tại -> Không cần endpoint là id user
     public UserResponse getMyInfo() {
-        var context = SecurityContextHolder.getContext();
-        String name = context.getAuthentication().getName();
-        context.getAuthentication();
-        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        log.info("In GET myInfo method");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository
+                .findById(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        log.info("In GET myInfo method : {}", authentication.getName());
         return userMapper.toUserResponse(user);
     }
 
@@ -145,7 +144,7 @@ public class UserService {
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
-    @PostAuthorize("returnObject.username == authentication.name")
+    @PostAuthorize("returnObject.id == authentication.name")
     public UserResponse getUser(String id) {
         log.info(
                 "In getUser method"); // Sẽ truy cập Method và hiện log bất kể có ROLE hay không. Có -> return. Không ->
@@ -154,6 +153,7 @@ public class UserService {
                 userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public UserResponse updateUser(String idUser, UserUpdateRequest request) {
         User user = userRepository.findById(idUser).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         // kiểm tra xem tài khoản muốn update có giống với thông tin xác thực không
@@ -176,5 +176,16 @@ public class UserService {
         SecureRandom secureRandom = new SecureRandom();
         int otp = 100000 + secureRandom.nextInt(900000); // Tạo số ngẫu nhiên từ 100000 đến 999999
         return String.valueOf(otp);
+    }
+    // Tạo template cho email body
+    private String createEmailBody(String username, String userId, String otp) {
+        return "<h1>Welcome to Book Social, " + username + "!</h1>"
+                + "<p>Thank you for creating an account with us. Please verify your email address using the OTP below:</p>"
+                + "<h2>Your OTP: "
+                + otp + "</h2>" + "<p>Or click the button below to verify your email:</p>"
+                + "<a href='http://localhost:8668/api/v1/identity/auth/verify?userId="
+                + userId + "&otp=" + otp + "'"
+                + "style='display:inline-block; padding:10px 20px; background-color:#4CAF50; color:white; text-decoration:none; border-radius:5px;'>Verify Email</a>"
+                + "<p>If you did not create an account, please ignore this email.</p>";
     }
 }

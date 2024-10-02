@@ -26,7 +26,7 @@ public class UserProfileController {
     @GetMapping("/{profileId}")
     ApiResponse<UserProfileResponse> getProfile(@PathVariable String profileId) {
         return ApiResponse.<UserProfileResponse>builder()
-                .result(userProfileService.getProfile(profileId))
+                .result(userProfileService.getByUserId(profileId))
                 .build();
     }
 
@@ -47,9 +47,11 @@ public class UserProfileController {
     @PutMapping(
             "/{profileId}") // @Valid save value don't change -> if don't have -> update firstName = Linh, others value
     // not update -> null
-    UserProfileResponse updateProfile(
-            @PathVariable String profileId, @Valid @RequestBody ProfileUpdateRequest request) {
-        return userProfileService.updateProfile(profileId, request);
+    ApiResponse<UserProfileResponse> updateProfile(
+            @PathVariable("profileId") String profileId, @Valid @RequestBody ProfileUpdateRequest request) {
+        return ApiResponse.<UserProfileResponse>builder()
+                .result(userProfileService.updateProfile(profileId, request))
+                .build();
     }
 
     @DeleteMapping("/{profileId}")

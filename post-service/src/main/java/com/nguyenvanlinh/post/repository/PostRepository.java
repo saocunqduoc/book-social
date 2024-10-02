@@ -10,4 +10,6 @@ import com.nguyenvanlinh.post.entity.Post;
 @Repository
 public interface PostRepository extends MongoRepository<Post, String> {
     Page<Post> findAllByUserId(String userId, Pageable pageable);
+
+    Post findPostById(String postId);
 }

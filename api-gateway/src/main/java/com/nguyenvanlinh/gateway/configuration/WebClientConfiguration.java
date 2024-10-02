@@ -28,9 +28,10 @@ public class WebClientConfiguration {
     @Bean
     CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("*"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowedMethods(List.of("*"));
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // Chỉ định nguồn cho phép
+        config.setAllowedHeaders(List.of("*")); // Cho phép tất cả các header
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Các phương thức cho phép
+        config.setAllowCredentials(true); // Cho phép gửi thông tin xác thực
 
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", config);
@@ -46,4 +47,5 @@ public class WebClientConfiguration {
                 .build();
         return httpServiceProxyFactory.createClient(IdentityClient.class);
     }
+
 }

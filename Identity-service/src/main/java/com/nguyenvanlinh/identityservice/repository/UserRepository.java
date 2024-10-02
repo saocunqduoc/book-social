@@ -15,6 +15,8 @@ public interface UserRepository extends JpaRepository<User, String> {
     boolean existsByUsername(String username);
 
     Optional<User> findByUsername(String username);
+
+    Optional<User> findById(String Id);
 }
 // layer -> call user service with public method -> call repository to create User.
 // we need to call below layer

@@ -21,6 +21,7 @@ public enum ErrorCode {
     CAN_NOT_CREATE_TOKEN(1011, "Can't create token!", HttpStatus.BAD_REQUEST),
     USER_CREATION_FAILED(1012, "Can't create user!", HttpStatus.BAD_REQUEST),
     PROFILE_NOT_EXISTED(1013, "Profile not found!", HttpStatus.NOT_FOUND),
+    ALREADY_IN_FRIENDSHIP(1014, "Already In Friendship!", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;

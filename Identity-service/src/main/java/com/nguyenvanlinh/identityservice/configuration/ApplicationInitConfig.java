@@ -9,12 +9,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.nguyenvanlinh.identityservice.constant.RolesConstant;
+import com.nguyenvanlinh.identityservice.dto.request.ProfileCreationRequest;
 import com.nguyenvanlinh.identityservice.entity.Permission;
 import com.nguyenvanlinh.identityservice.entity.Role;
 import com.nguyenvanlinh.identityservice.entity.User;
 import com.nguyenvanlinh.identityservice.repository.PermissionRepository;
 import com.nguyenvanlinh.identityservice.repository.RoleRepository;
 import com.nguyenvanlinh.identityservice.repository.UserRepository;
+import com.nguyenvanlinh.identityservice.repository.httpclient.ProfileClient;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +40,10 @@ public class ApplicationInitConfig {
 
     @Bean
     ApplicationRunner applicationRunner(
-            UserRepository userRepository, RoleRepository roleRepository, PermissionRepository permissionRepository) {
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            PermissionRepository permissionRepository,
+            ProfileClient profileClient) {
         return args -> {
             log.info("Initializing application.....");
             if (userRepository.findByUsername(ADMIN_USER_NAME).isEmpty()) {
@@ -78,6 +83,13 @@ public class ApplicationInitConfig {
                         .build();
 
                 userRepository.save(user);
+                profileClient.createProfile(ProfileCreationRequest.builder()
+                        .userId(user.getId())
+                        .email(user.getEmail())
+                        .username(user.getUsername())
+                        .firstName(ADMIN_USER_NAME)
+                        .lastName(ADMIN_USER_NAME)
+                        .build());
                 log.warn("user: admin has been created with default password: admin, please change it!");
             }
             log.info("Application initialization completed .....");

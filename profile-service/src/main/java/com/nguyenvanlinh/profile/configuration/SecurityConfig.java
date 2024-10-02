@@ -2,7 +2,6 @@ package com.nguyenvanlinh.profile.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,9 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     // config public endpoint
-    private static final String[] PUBLIC_ENDPOINTS = {
-            "/internal/users", "/internal/users/**"
-    };
+    private static final String[] PUBLIC_ENDPOINTS = {"/internal/users", "/internal/users/**"};
 
     private final CustomJwtDecoder customJwtDecoder;
 
